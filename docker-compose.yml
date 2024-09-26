@@ -1,0 +1,35 @@
+version: '3'
+services:
+  fastapi:
+    build: .
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/app_db
+    command: uvicorn app.api.main:app --host 0.0.0.0 --port 8000
+
+  rabbitmq:
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  worker:
+    build: .
+    container_name: celery_worker
+    depends_on:
+      - fastapi
+    command: celery -A app.celery_app worker --loglevel=info

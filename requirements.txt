@@ -1,0 +1,8 @@
+fastapi==0.70.0
+uvicorn==0.15.0
+pydantic==1.8.2
+kafka-python==2.0.2
+celery==5.1.2
+psycopg2-binary==2.9.1
+SQLAlchemy==1.4.25
+python-dotenv==0.19.0
